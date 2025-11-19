@@ -53,16 +53,15 @@ fun IU(vm: MyViewModel) {
             contentAlignment = Alignment.CenterEnd
         ) {
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 // Mostramos el récord actual
                 Text(
                     text = "Récord: $record",
                     color = Color.White,
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(end = 16.dp)
+                    fontSize = 20.sp
                 )
                 Text(
                     text = "Ronda: $ronda",
