@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlin.text.clear
 
 class MyViewModel() : ViewModel() {
 
@@ -20,6 +21,8 @@ class MyViewModel() : ViewModel() {
 
 
     var ronda = MutableStateFlow(0)
+
+    val record = MutableStateFlow(0)
 
     init {
         // estado inicial
@@ -87,10 +90,26 @@ class MyViewModel() : ViewModel() {
         }
     }
 
+    /**
+     * Finaliza el juego y actualiza el récord si es necesario.
+     */
     private fun gameOver() {
+        Log.d(TAG_LOG, "GAME OVER. Ronda alcanzada: ${ronda.value}")
         estadoActual.value = Estados.GameOver
-        Log.d(TAG_LOG, "GAME OVER - Estado: ${Estados.GameOver}")
+
+        // Actualizar el récord si se ha superado
+        if (ronda.value > record.value) {
+            record.value = ronda.value
+            Log.d(TAG_LOG, "¡Nuevo récord! ${record.value}")
+        }
     }
+    fun resetToInicio() {
+        estadoActual.value = Estados.Inicio
+        ronda.value = 0
+        secuencia.value.clear()
+        secuenciaJugador.value.clear()
+    }
+
 
 }
 

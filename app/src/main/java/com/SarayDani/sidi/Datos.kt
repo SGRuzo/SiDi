@@ -11,10 +11,10 @@ data class Datos (
 )
 
 enum class Colores(val color: Color, val txt: String) {
-    CLASE_ROJO(color = Color.Red, txt = "rojo"),
-    CLASE_VERDE(color = Color.Green, txt = "verde"),
-    CLASE_AZUL(color = Color.Blue, txt = "azul"),
-    CLASE_AMARILLO(color = Color.Yellow, txt = "amarillo"),
+    CLASE_ROJO(color = Color(0xFFBB0000), txt = "roxo"),
+    CLASE_VERDE(color = Color(0xFF00BB00), txt = "verde"),
+    CLASE_AZUL(color = Color(0xFF0082E7), txt = "azul"),
+    CLASE_AMARILLO(color = Color(0xFFFFC107), txt = "melo"),
     CLASE_START(color = Color.Magenta, txt = "Start")
 }
 

@@ -4,14 +4,18 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -20,11 +24,12 @@ fun IU(vm: MyViewModel) {
 
     val estado by vm.estadoActual.collectAsState()
     val ronda by vm.ronda.collectAsState()
+    val record by vm.record.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF360157)) // Fondo morado ORIGINAL
+            .background(Color(0xFF4C007A)) // Fondo morado ORIGINAL
     ) {
 
         // ------------------------------
@@ -37,11 +42,24 @@ fun IU(vm: MyViewModel) {
                 .padding(horizontal = 16.dp),
             contentAlignment = Alignment.CenterEnd
         ) {
-            Text(
-                text = "Ronda: $ronda",
-                color = Color.White,
-                fontSize = 20.sp
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Mostramos el récord actual
+                Text(
+                    text = "Récord: $record",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(end = 16.dp)
+                )
+                Text(
+                    text = "Ronda: $ronda",
+                    color = Color.White,
+                    fontSize = 20.sp
+                )
+            }
         }
 
         // ------------------------------
@@ -61,12 +79,12 @@ fun IU(vm: MyViewModel) {
             )
 
             // Botón START pequeño y centrado COMO EL ORIGINAL
-            if (estado == Estados.Inicio || estado == Estados.GameOver) {
+            if (estado == Estados.Inicio) {
                 Button(
                     onClick = { vm.empezarJuego() },
                     modifier = Modifier.size(80.dp),  // Tamaño original
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF360157) // El mismo color que el original
+                        containerColor = Color(0xFF4C007A) // El mismo color que el original
                     ),
                     shape = CircleShape
                 ) {
@@ -79,7 +97,56 @@ fun IU(vm: MyViewModel) {
             }
         }
     }
+
+    // Comprobamos si el estado es GameOver para mostrar el diálogo
+    if (estado == Estados.GameOver) {
+        GameOverDialog(
+            rondaActual = ronda,
+            record = record,
+            onPlayAgain = { vm.empezarJuego() },
+            onClose = { vm.resetToInicio() } // Nueva función en el VM
+        )
+    }
 }
+/**
+ * Diálogo que se muestra al perder (Game Over).
+ */
+@Composable
+fun GameOverDialog(
+    rondaActual: Int,
+    record: Int,
+    onPlayAgain: () -> Unit,
+    onClose: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onClose, // Se llama si el usuario pulsa fuera del diálogo
+        title = {
+            Text(
+                text = "¡Has perdido!",
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
+            )
+        },
+        text = {
+            Column {
+                Text(text = "Llegaste a la ronda: $rondaActual", fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Tu récord es: $record", fontSize = 18.sp)
+            }
+        },
+        confirmButton = {
+            Button(onClick = onPlayAgain) {
+                Text("Jugar de Nuevo")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onClose) {
+                Text("Cerrar")
+            }
+        }
+    )
+}
+
 
 /**
  * BOTONERA EXACTA A LA ORIGINAL
@@ -149,7 +216,7 @@ fun Boton(color: Colores, index: Int, onColorClick: (Int) -> Unit) {
         },
         modifier = Modifier.fillMaxSize(),
         colors = ButtonDefaults.buttonColors(color.color),
-        shape = RectangleShape  // Igual al original
+        shape = RoundedCornerShape(20.dp)
     ) {
         Text(color.txt, fontSize = 10.sp, color = Color.Black)
     }
