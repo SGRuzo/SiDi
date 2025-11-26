@@ -17,6 +17,10 @@ GameOver --> Idle
 
 ```
 
+## Vídeo Demostrativo
+
+![DemostracionSIDI.gif](DemostracionSIDI.gif)
+
 # Explicación del programa
 
 ## Flujo del juego
