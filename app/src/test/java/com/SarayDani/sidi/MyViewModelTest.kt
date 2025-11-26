@@ -156,7 +156,7 @@ class MyViewModelTest {
         // With 4 possible colors, if we run 10 times, we should likely have at least 2 different values
         // This is a probabilistic test - it could theoretically fail but very unlikely
         val uniqueColors = sequences.distinct()
-        assertTrue("Should generate varied colors", uniqueColors.size >= 1)
+        assertTrue("Should generate varied colors", uniqueColors.size >= 2)
     }
 
     // ===========================================
@@ -562,16 +562,35 @@ class MyViewModelTest {
 
     @Test
     fun `all valid color inputs should be accepted`() = runTest {
-        // Test all four colors (0-3)
-        for (color in 0..3) {
-            viewModel = MyViewModel()
-            viewModel.estadoActual.value = Estados.IntroducirSecuencia
-            viewModel.secuencia.value.add(color)
-            
-            viewModel.introducirSecuencia(color)
-            
-            assertEquals("Color $color should be accepted", color, viewModel.secuenciaJugador.value.first())
-        }
+        // Test each valid color individually using the existing viewModel
+        // Color 0
+        viewModel.estadoActual.value = Estados.IntroducirSecuencia
+        viewModel.secuencia.value.clear()
+        viewModel.secuenciaJugador.value.clear()
+        viewModel.secuencia.value.add(0)
+        viewModel.introducirSecuencia(0)
+        assertEquals("Color 0 should be accepted", 0, viewModel.secuenciaJugador.value.first())
+        
+        // Reset and test color 1
+        viewModel.resetToInicio()
+        viewModel.estadoActual.value = Estados.IntroducirSecuencia
+        viewModel.secuencia.value.add(1)
+        viewModel.introducirSecuencia(1)
+        assertEquals("Color 1 should be accepted", 1, viewModel.secuenciaJugador.value.first())
+        
+        // Reset and test color 2
+        viewModel.resetToInicio()
+        viewModel.estadoActual.value = Estados.IntroducirSecuencia
+        viewModel.secuencia.value.add(2)
+        viewModel.introducirSecuencia(2)
+        assertEquals("Color 2 should be accepted", 2, viewModel.secuenciaJugador.value.first())
+        
+        // Reset and test color 3
+        viewModel.resetToInicio()
+        viewModel.estadoActual.value = Estados.IntroducirSecuencia
+        viewModel.secuencia.value.add(3)
+        viewModel.introducirSecuencia(3)
+        assertEquals("Color 3 should be accepted", 3, viewModel.secuenciaJugador.value.first())
     }
 
     @Test
