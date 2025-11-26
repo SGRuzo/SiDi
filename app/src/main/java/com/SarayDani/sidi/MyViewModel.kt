@@ -3,12 +3,17 @@ package com.SarayDani.sidi
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.text.clear
 
-class MyViewModel() : ViewModel() {
+class MyViewModel(
+    private val randomGenerator: () -> Int = { (0..3).random() },
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Main
+) : ViewModel() {
 
     private val TAG_LOG = "miDebug"
 
@@ -44,15 +49,15 @@ class MyViewModel() : ViewModel() {
     /**
      * Función para generar un nuevo color en la secuencia, private porque solo la usa el ViewModel
      */
-    private fun generarColor() {
-        val numero = (0..3).random()
+    internal fun generarColor() {
+        val numero = randomGenerator()
         secuencia.value.add(numero)
         estadoActual.value = Estados.GenerarSecuencia
         Log.d(TAG_LOG, "Generando secuencia - Estado: ${Estados.GenerarSecuencia}")
     }
 
     fun reproducirSecuencia() {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             estadoActual.value = Estados.GenerarSecuencia
 
             Log.d(TAG_LOG, "Reproduciendo secuencia - Estado: ${Estados.GenerarSecuencia}")
@@ -93,7 +98,7 @@ class MyViewModel() : ViewModel() {
     /**
      * Finaliza el juego y actualiza el récord si es necesario.
      */
-    private fun gameOver() {
+    internal fun gameOver() {
         Log.d(TAG_LOG, "GAME OVER. Ronda alcanzada: ${ronda.value}")
         estadoActual.value = Estados.GameOver
 
